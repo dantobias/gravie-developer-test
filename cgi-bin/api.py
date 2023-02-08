@@ -9,6 +9,13 @@ import cgi
 apiurl = 'https://www.giantbomb.com/api'
 apikey = '9f5f504612747bac723f6776a7e63514959350e2'
 
+# Handles checkout. The 'checkout' parameter from elsewhere is passed here as 'platformSel' where it stores the
+# selected platform if it's greater than zero, while -1 is used to signal the initial checkout page where you
+# have to choose a platform. In an actual production site, there'd need to be more data structures to store
+# such things as user data so it knows who to send the games to, and perhaps a shopping cart to let you choose
+# multiple games before you check out, and billing data (whether per-game or monthly subscription or whatever)
+# with a database to store all of that in, but this is just a simple demo without that stuff.
+
 def do_checkout(gameid, platformSel):
     url = apiurl+'/game/'+urllib.parse.quote_plus(gameid)+'/?api_key='+apikey+'&format=json'
 
@@ -17,6 +24,7 @@ def do_checkout(gameid, platformSel):
         rawdata = page.read()
         indata = json.loads(rawdata.decode('ascii'))
 
+        # First checkout page
         if int(platformSel) < 0:        
             title = 'Checkout: '+indata['results']['name']
             body = '<p><a href="javascript:history.back();">&#8592;Go Back</a></p>\n'
@@ -40,7 +48,7 @@ def do_checkout(gameid, platformSel):
             body += '<button onClick="newContentPage(\'\', \''+indata['results']['guid']+'\', $(\'#platformField\').val())">Complete your Checkout</button>\n'
 
             body += '</div>\n'
-        else:
+        else:  # Second checkout page; final completion
             title = 'Completed Checkout: '+indata['results']['name']
             body = '<div class="checkoutcomplete">\n'
 
@@ -60,6 +68,8 @@ def do_checkout(gameid, platformSel):
         return json.dumps(result)
     except:
         return json.dumps({'title': 'Unable to handle request', 'body': '<p>There is a problem with the system that handles game detail requests, preventing the completion of this checkout. Please try again later.</p>'})
+
+# Load and isplay info on one game
 
 def game_info(gameid):
     url = apiurl+'/game/'+urllib.parse.quote_plus(gameid)+'/?api_key='+apikey+'&format=json'
@@ -109,6 +119,8 @@ def game_info(gameid):
     except:
         return json.dumps({'title': 'Unable to handle request', 'body': '<p>There is a problem with the system that handles game detail requests.</p>'})
 
+# Load and display game search results
+
 def game_search(searchStr):
     url = apiurl+'/search/?api_key='+apikey+'&format=json&query="'+ urllib.parse.quote_plus(searchStr)+'"&resources=game'
 
@@ -145,10 +157,15 @@ def game_search(searchStr):
             body += '    <br style="clear:left;">'
             body += '</div>\n'
 
+        if body == '':
+            body = '<p>No results were found for this search.</p>\n'
+
         result = {'title': title, 'body': body}
         return json.dumps(result)
     except:
         return json.dumps({'title': 'Unable to handle request', 'body': '<p>Either there is a problem with the system that handles game searches, or you have entered an improper query.</p>'})
+
+# Get CGI parameters
 
 arguments = cgi.parse()
 searchStr = ''
@@ -160,6 +177,9 @@ if ('gameId' in arguments):
 checkout = ''
 if ('checkout' in arguments):
     checkout = arguments['checkout'][0]
+
+# Get appropriate results and send them as JSON
+# In all cases, JSON has structure with title and body values so JavaScript routines can consistently display them.
 
 print("Content-type: application/json\n\n")
 if gameId:
