@@ -5,6 +5,7 @@ import json
 import html
 import urllib.parse
 import cgi
+import re
 
 apiurl = 'https://www.giantbomb.com/api'
 apikey = '9f5f504612747bac723f6776a7e63514959350e2'
@@ -87,10 +88,16 @@ def game_info(gameid):
 
         body += '<p><b>Item #:</b> '+indata['results']['guid']+'</p>\n'
 
+        descStr = ''
         if 'description' in indata['results'] and indata['results']['description']:
-            body += indata['results']['description']
+            descStr = indata['results']['description']
         elif 'deck' in indata['results'] and indata['results']['deck']:
-            body += '<p>'+indata['results']['deck']+'</p>'
+            descStr = '<p>'+indata['results']['deck']+'</p>'
+
+        # Strip hyperlinks from description because they don't work
+        descStr = re.sub("<(a [^>]*|/a)>", "", descStr)
+
+        body += descStr
 
         if 'platforms' in indata['results'] and indata['results']['platforms']:
             platformStr = ''
