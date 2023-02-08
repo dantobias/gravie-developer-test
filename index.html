@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
-  <title>Test</title>
+  <title>Game Rental Demo</title>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,45 +16,19 @@
   <script src="js/vendor/modernizr.js"></script>
 </head>
 
-<body class="page-generic">
-
-  <header class="site-header">
-
-    <nav class="site-nav">
-      <ul>
-        <li><a href="./">Home</a></li>
-        <li><a href="search.html">Search</a></li>
-        <li><a href="checkout.html">Checkout</a></li>
-      </ul>
-    </nav>
-    <button type="button" class="btn-menu midpage"><span>Menu</span></button>
-  </header>
+<body class="page-generic heropic">
 
   <h1 style="text-align:center;">Game Rental Demo</h1>
 
   <div id="main">
+    <form onsubmit="newContentPage($('#searchField').val(), '', ''); return false;">
+      Search Games:
+      <input type="text" name="searchStr" value="" class="search" id="searchField">
+      <input type="submit" name="Search" value="Search">
+    </form>
       <div id="ajaxInsert">
-        Testing...
       </div>
   </div>
-  
-  <footer class="site-footer">
-    <div class="row column">
-      <nav class="footer-nav">
-        <ul>
-          <li><a href="./">Home</a></li>
-          <li><a href="search.html">Search</a></li>
-          <li><a href="checkout.html">Checkout</a></li>
-        </ul>
-      </nav>
-    </div>
-
-    <div class="row column">
-      <div class="footer-legal">
-        All Rights Reserved (and all lefts too)
-      </div>
-    </div>
-  </footer>
 
   <script src="js/vendor/jquery-3.1.0.js"></script>
   <script src="js/vendor.js"></script>

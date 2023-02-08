@@ -10,11 +10,12 @@ body {
 }
 
 .heropic {
+    background-image: url(/images/arcade-gaming-1361761483gDu.webp);
     background-position: center center; 
     background-attachment:scroll; 
     background-size: 100%; 
     background-color:black; 
-    color:#FF5B74;
+    color:#b31616;
 }
 
 article,
@@ -107,12 +108,17 @@ img {
 svg:not(:root) {
     overflow: hidden;
 }
+input.search {
+    width: calc(100% - 12em)
+}
 button,
 input,
 optgroup,
 select,
 textarea {
     font: inherit;
+    background-color: rgba(145, 95, 167, 0.281);
+    color:rgba(22, 22, 22, 0.774);
     margin: 0;
 }
 optgroup {
@@ -130,6 +136,7 @@ select {
 [type="submit"],
 button,
 html [type="button"] {
+    appearance: button;
     -webkit-appearance: button;
     cursor: pointer;
 }
@@ -176,6 +183,7 @@ textarea {
     height: auto;
 }
 [type="search"] {
+    appearance: textfield;
     -webkit-appearance: textfield;
     outline-offset: -2px;
 }
@@ -1920,38 +1928,9 @@ html.menu-opened {
     overflow: hidden;
 }
 body {
-    font-family: fairplex-wide, serif;
-    font-size: 125%;
+    font-family: Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-}
-h1,
-h2,
-h3,
-h4,
-h5 {
-    line-height: 1;
-    margin: 0 0 0.9375rem;
-    text-transform: uppercase;
-    font-size: 1.5rem;
-}
-@media screen and (min-width: 40em) {
-    h1,
-    h2,
-    h3,
-    h4,
-    h5 {
-        font-size: 2.25rem;
-    }
-}
-@media screen and (min-width: 64em) {
-    h1,
-    h2,
-    h3,
-    h4,
-    h5 {
-        font-size: 3rem;
-    }
 }
 ::-webkit-input-placeholder {
     color: hsla(0, 0%, 100%, 0.4);
@@ -2198,7 +2177,6 @@ img {
     border-radius: 1.25rem;
     color: #f50856;
     font-size: 1.25rem;
-    text-transform: uppercase;
     padding: 0.3125rem 1.5625rem;
     position: absolute;
     left: 50%;
@@ -2303,7 +2281,6 @@ img {
     border: 1px solid transparent;
     color: #000;
     font-weight: 700;
-    text-transform: uppercase;
     outline: none;
     width: 100%;
 }
@@ -2380,7 +2357,6 @@ img {
     }
 }
 .home-quote .quote {
-    text-transform: uppercase;
     font-weight: 900;
     margin-bottom: 2.5rem;
 }
@@ -2400,7 +2376,7 @@ img {
 
 #main {
 	margin: auto;
-	max-width: 40em;
+	max-width: 60em;
 	border: 1px solid black;
 	border-radius: 1rem;
 	padding: 1rem;
@@ -2421,4 +2397,55 @@ img {
 
 .loggedin, .loggedout {
     display: none;
+}
+
+.searchitem {
+    margin: auto;
+    width: 90%;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    padding: 1em;
+    background-color: rgba(255, 255, 0, 0.253);
+    border: 1px solid black;
+}
+
+.itemthumb {
+    width: 132px;
+    float: left;
+    margin-right: 1em;
+}
+
+.itemdetail {
+    width: calc(92% - 132px);
+    float: left;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.itemdetails {
+    width: 100%;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    padding: 1em;
+    background-color: rgba(0, 110, 255, 0.13);
+    border: 1px solid black;
+}
+
+.checkout {
+    width: 100%;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    padding: 1em;
+    background-color: rgba(0, 255, 136, 0.562);
+    border: 1px solid black;
+}
+
+.checkoutcomplete {
+    width: 100%;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    padding: 1em;
+    background-color: rgba(0, 255, 255, 0.562);
+    border: 1px solid black;
 }

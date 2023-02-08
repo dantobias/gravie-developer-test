@@ -1,19 +1,26 @@
 "use strict";
 
+var titleEnd = 'Game Rental Demo';
+
 let domReady = (cb) => {
-  document.readyState === 'interactive' || document.readyState === 'complete'
-    ? cb()
-    : document.addEventListener('DOMContentLoaded', cb);
-};
-
-domReady(() => {
-  // Display body when DOM is loaded
-  document.body.style.visibility = 'visible';
-  insertContent();
-});
-
-var App = window.App || {};
-
+    document.readyState === 'interactive' || document.readyState === 'complete'
+      ? cb()
+      : document.addEventListener('DOMContentLoaded', cb);
+  };
+  
+  domReady(() => {
+    // Display search results when DOM is loaded if parameter given
+    if (getQueryVariable('gameId') !== false) {
+        if (getQueryVariable('checkout') != false) {
+            insertContent('', getQueryVariable('gameId'), getQueryVariable('checkout'));
+        } else {
+            insertContent('', getQueryVariable('gameId'), '');
+        }
+    } else if (getQueryVariable('searchStr') !== false) {
+        insertContent(getQueryVariable('searchStr'), '', '');
+    }
+  });
+  
 !(function () {
     var n = $("html"),
         t = function () {
@@ -26,8 +33,6 @@ var App = window.App || {};
         };
     e();
 })();
-
-// various functions used in scripts in this site
 
 function getQueryVariable(variable)
 {
@@ -66,12 +71,11 @@ function fadein(element) {
         op += op * 0.1;
     }, 20);
 }
-var titleEnd = 'App';
 
-function requestAPI() {
+function retrieveApiContent(searchStr, gameId, checkout) {
     $.ajax({
         method: 'GET',
-        url: '/cgi-bin/api.py',
+        url: 'cgi-bin/api.py?searchStr='+encodeURIComponent(searchStr)+'&gameId='+encodeURIComponent(gameId)+'&checkout='+encodeURIComponent(checkout),
         contentType: 'application/json',
         dataType : "json",
         success: completeRequest,
@@ -85,7 +89,7 @@ function requestAPI() {
                 console.error('Response: ', jqXHR.responseText);
 	        }
 			catch(err){
-                outStr = 'Unknown Error';
+                outStr = textStatus+': '+errorThrown;
 		    }
 			finally{
                 $("#ajaxInsert").replaceWith('<div id="ajaxInsert"><p style="text-align:center;">An error occured when requesting API data:<br>\n' + outStr + '</p></div>');
@@ -97,30 +101,49 @@ function requestAPI() {
 }
 
 function completeRequest(result) {
-	var articleTopIns = '';
-	if (result.title) {
-		articleTopIns = '<h2 style="text-align:center;">'+
-		  result.error+'</h2>\n<p style="text-align:center;">'+result.status_code+'</p>\n';
-    }
-	$("#ajaxInsert").replaceWith('<div id="ajaxInsert">\n'+articleTopIns+
-	  result.results.description+'\n</div>');
-    $("title").replaceWith('<title>'+titleEnd+'</title>');
+	$("#ajaxInsert").replaceWith('<div id="ajaxInsert">\n'+
+      '<h2>'+result.title+'</h2>'+
+	  result.body+'\n</div>');
+    $("title").replaceWith('<title>'+result.title+' | '+titleEnd+'</title>');
     window.scrollTo(0, 0);
 }
 
-function insertContent() {
-   	$("title").replaceWith('<title>Loading... | '+titleEnd+'</title>');
+function insertContent(searchStr, gameId, checkout) {
+   	//$("title").replaceWith('<title>Loading... | '+titleEnd+'</title>');
    	$("#ajaxInsert").replaceWith('<div id="ajaxInsert"><p style="text-align:center;">Loading...</p></div>');
-    requestAPI();
+    retrieveApiContent(searchStr, gameId, checkout);
 }
 
-function replaceContent() {
-    //fadeout(document.getElementById('main'));
-	$("title").replaceWith('<title>Loading... | '+titleEnd+'</title>');
-   	$("#ajaxInsert").replaceWith('<div id="ajaxInsert"><p style="text-align:center;">Loading...</p></div>');
-    history.pushState(null, null, '/search.html');
+function newContentPage(searchStr, gameId, checkout) {
+    history.replaceState({'searchStr': searchStr, 'gameId': gameId, 'checkout': checkout}, '');
+    insertContent(searchStr, gameId, checkout);
+    if (gameId) {
+        if (checkout) {
+            history.pushState({'searchStr': searchStr, 'gameId': gameId, 'checkout': checkout}, '', '/?gameId='+encodeURIComponent(gameId)+'&checkout='+encodeURIComponent(checkout));
+        } else {
+            history.pushState({'searchStr': searchStr, 'gameId': gameId, 'checkout': checkout}, '', '/?gameId='+encodeURIComponent(gameId));
+        }
+    } else {
+        history.pushState({'searchStr': searchStr, 'gameId': gameId, 'checkout': checkout}, '', '/?searchStr='+encodeURIComponent(searchStr));
+    }
 }
 
 window.onpopstate = function(e) {
-    insertContent();
+    if (getQueryVariable('gameId') !== false) {
+        if (getQueryVariable('checkout') !== false) {
+            insertContent('', getQueryVariable('gameId'), getQueryVariable('checkout'));
+        } else {
+            insertContent('', getQueryVariable('gameId'), '');
+        }
+    } else if (getQueryVariable('searchStr') !== false) {
+        insertContent(getQueryVariable('searchStr'), '', '');
+    } else {
+        $("#ajaxInsert").replaceWith('<div id="ajaxInsert">\n'+'</div>');
+        $("title").replaceWith('<title>'+titleEnd+'</title>');
+    }
+    if (e.state && e.state.searchStr) {
+        $("#searchField").val(e.state.searchStr);
+    } else {
+        $("#searchField").val('')
+    }
 };
