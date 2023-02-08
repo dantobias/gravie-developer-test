@@ -108,6 +108,15 @@ def game_info(gameid):
                     platformStr += platform['name']
             body += '<p><b>Platforms:</b> '+platformStr+'</p>\n'
 
+        if 'publishers' in indata['results'] and indata['results']['publishers']:
+            publisherStr = ''
+            for publisher in indata['results']['publishers']:
+                if 'name' in publisher:
+                    if publisherStr:
+                        publisherStr += ', '
+                    publisherStr += publisher['name']
+            body += '<p><b>Publishers:</b> '+publisherStr+'</p>\n'
+
         if 'original_game_rating' in indata['results'] and indata['results']['original_game_rating']:
             ratingStr = ''
             for rating in indata['results']['original_game_rating']:
